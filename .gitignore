@@ -1,0 +1,24 @@
+# ElChato-Desktop - Git Ignore
+
+# Data directories (persistent)
+hermes-data/
+paperclip-data/
+postgres-data/
+
+# Docker
+*.tar
+*.log
+
+# Config overrides (if you want to customize locally)
+# hermes-config.local.yaml
+# paperclip-config.local.yaml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

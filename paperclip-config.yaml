@@ -1,0 +1,44 @@
+# ElChato-Desktop - Paperclip Configuration
+# ElChato Company setup with governance and skill catalog
+
+company:
+  name: "ElChato Company"
+  mission: "Build and ship AI-powered products autonomously"
+  budget:
+    monthly: 100
+    currency: "USD"
+
+agents:
+  - name: "Hermes-CEO"
+    adapter: "hermes_local"
+    role: "CEO"
+    budget: 50
+    skills:
+      - "company-builder"
+      - "skill-compound"
+      - "browser-automation"
+    config:
+      hermes_path: "/opt/elchato/hermes-data"
+      browser_mode: "browser_use"
+      sandbox: "docker"
+
+skills:
+  catalog:
+    - name: "skill-compound"
+      description: "Auto-save successful workflows as reusable skills"
+      source: "hermes"
+    - name: "browser-automation"
+      description: "Browser Use mode for efficient automation"
+      source: "hermes"
+    - name: "company-builder"
+      description: "Bootstrap company structure and goals"
+      source: "paperclip"
+
+governance:
+  approvals:
+    - "new_hires"
+    - "budget_changes"
+    - "skill_deployments"
+  audit:
+    enabled: true
+    path: "/opt/elchato/paperclip-data/audit"

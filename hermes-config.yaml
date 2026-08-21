@@ -1,0 +1,55 @@
+# ElChato-Desktop - Hermes Agent Configuration
+# Browser Use mode + Skill compounding + Docker sandbox
+
+terminal:
+  backend: docker
+  docker_image: "nikolaik/python-nodejs:python3.11-nodejs20"
+  docker_mount_cwd_to_workspace: true
+  docker_run_as_host_user: true
+  docker_persist_across_processes: true
+  docker_orphan_reaper: true
+  
+  # Resource limits
+  container_cpu: 2
+  container_memory: 8192
+  container_disk: 51200
+  
+  # Security hardening
+  docker_volumes:
+    - "/opt/elchato/hermes-data:/workspace"
+    - "/opt/elchato/hermes-data/output:/output"
+  docker_forward_env:
+    - "OPENROUTER_API_KEY"
+    - "GITHUB_TOKEN"
+  timeout: 300
+  lifetime_seconds: 600
+
+# Browser Use mode (replaces 12 browser tools with one script-driven tool)
+browser:
+  mode: "browser_use"
+  backend: "local"
+
+# Skill compounding
+skills:
+  guard_agent_created: true
+  auto_save: true
+  catalog_sync: true
+
+# Memory (persistent across sessions)
+memory:
+  memory_enabled: true
+  user_profile_enabled: true
+  memory_char_limit: 2200
+  user_char_limit: 1375
+
+# Model (quantized for performance)
+model:
+  provider: "openrouter"
+  name: "qwen/qwen2.5-7b-instruct-q4_K_M"
+  context_length: 32000
+
+# Compression (to fit more context)
+compression:
+  enabled: true
+  threshold: 0.50
+  target_ratio: 0.20

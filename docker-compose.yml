@@ -1,0 +1,63 @@
+version: "3.9"
+
+services:
+  hermes:
+    image: nousresearch/hermes-agent:latest
+    container_name: hermes-elchato-desktop
+    volumes:
+      - /opt/elchato/hermes-data:/workspace
+      - /opt/elchato/hermes-data/output:/output
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "3000:3000"
+    environment:
+      - HERMES_BACKEND=docker
+      - HERMES_MODEL=qwen/qwen2.5-7b-instruct-q4_K_M
+      - HERMES_BROWSER_MODE=browser_use
+      - HERMES_SKILLS_AUTO_SAVE=true
+      - TERM=dumb
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - DAC_OVERRIDE
+      - CHOWN
+      - FOWNER
+    pids_limit: 256
+    tmpfs:
+      - /tmp:size=512M
+      - /var/tmp:size=256M
+      - /run:size=64M
+
+  paperclip:
+    image: paperclipai/paperclip:latest
+    container_name: paperclip-elchato-desktop
+    volumes:
+      - /opt/elchato/paperclip-data:/app/data
+      - /opt/elchato/hermes-data/skills:/app/skills
+    ports:
+      - "3001:3001"
+    environment:
+      - PAPERCLIP_TELEMETRY_DISABLED=1
+      - DATABASE_URL=postgresql://postgres:hermes123@postgres:5432/paperclip
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres-elchato-desktop
+    volumes:
+      - /opt/elchato/postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=paperclip
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=hermes123
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
